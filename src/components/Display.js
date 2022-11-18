@@ -1,7 +1,8 @@
 import React from "react";
+import { BiHistory } from "react-icons/bi";
 import "./styles/Display.css";
 
-const Display = ({ input, setInput, answer }) => {
+const Display = ({ input, setInput, answer, setIsShowModal }) => {
   const onChangeTagInput = (e) => {
     const re = /^[!%(-+\x2D-9^glox\xF7\u221A]+$/;
 
@@ -13,6 +14,7 @@ const Display = ({ input, setInput, answer }) => {
   return (
     <>
       <div className="display">
+        <BiHistory className="history" onClick={() => setIsShowModal(true)} />
         {answer === "" ? (
           <>
             <input

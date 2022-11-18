@@ -1,5 +1,6 @@
 .display {
   display: flex;
+  align-items: flex-end;
   flex-direction: column;
   padding: 10px;
   border-top-left-radius: 10px;
@@ -41,4 +42,14 @@
 .value:focus-visible {
   outline-style: none;
   outline-width: 0px;
+}
+.history {
+  font-size: 25px;
+  color: #fff;
+  padding: 5px 5px 0 0;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+.history:hover {
+  color: rgb(208, 208, 208);
 }

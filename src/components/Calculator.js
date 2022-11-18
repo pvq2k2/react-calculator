@@ -3,11 +3,15 @@ import Display from "./Display";
 import Buttons from "./Buttons";
 import "./styles/Calculator.css";
 import { evaluate, round } from "mathjs";
+import { useDispatch, useSelector } from "react-redux";
+import { addToHistory } from "../features/history/historySlice";
 
 function Calculator() {
   const [input, setInput] = useState("");
   const [answer, setAnswer] = useState("");
-
+  const [isShowModal, setIsShowModal] = useState(false);
+  const historys = useSelector((state) => state.history);
+  const dispatch = useDispatch();
   //input
   const inputHandler = (event) => {
     if (answer === "Invalid Input!!") return;
@@ -74,6 +78,7 @@ function Calculator() {
       }
       finalexpression = evalSqrt;
     }
+    // console.log("text", finalexpression);
 
     try {
       // check brackets are balanced or not
@@ -89,6 +94,9 @@ function Calculator() {
           : "Invalid Input!!"; //error.message;
     }
     isNaN(result) ? setAnswer(result) : setAnswer(round(result, 3));
+    // let resultHistory = `${finalexpression} = ${result}`;
+    // console.log(resultHistory);
+    dispatch(addToHistory({ finalexpression, result }));
   };
 
   // remove last character
@@ -134,7 +142,12 @@ function Calculator() {
     <>
       <div className="container">
         <div className="main">
-          <Display input={input} setInput={setInput} answer={answer} />
+          <Display
+            input={input}
+            setInput={setInput}
+            answer={answer}
+            setIsShowModal={setIsShowModal}
+          />
           <Buttons
             inputHandler={inputHandler}
             clearInput={clearInput}
@@ -142,6 +155,11 @@ function Calculator() {
             changePlusMinus={changePlusMinus}
             calculateAns={calculateAns}
           />
+          {isShowModal ? (
+            <ModalHistory historys={historys} setIsShowModal={setIsShowModal} />
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </>
@@ -149,3 +167,28 @@ function Calculator() {
 }
 
 export default Calculator;
+
+const ModalHistory = ({ historys, setIsShowModal }) => {
+  console.log(historys);
+  return (
+    <div className="overlay" onClick={() => setIsShowModal(false)}>
+      <div
+        className="modal custom-scroll-bar"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {historys.length === 0 ? (
+          <p>Không có lịch sử</p>
+        ) : (
+          <div className="colHistory">
+            {historys?.map((history) => (
+              <div key={history.result}>
+                <p className="finalexpression">{history.finalexpression} =</p>
+                <span className="result">{history.result}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
